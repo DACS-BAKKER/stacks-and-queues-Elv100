@@ -1,77 +1,110 @@
 import edu.princeton.cs.algs4.StdOut;
 
-public class LinkedList {
-
-    Node origin;
+/*
+ * LinkedList
+ * October 22, 2019
+ * Elven Shum
+ */
+public class LinkedList<Item>{
+    Node<Item> origin;
 
     public LinkedList() {
-        origin = new Node();
+        origin = null;
     }
 
-    public void addItem(int item) {
-        Node currentNode = origin;
-        Node newNode = new Node(item);
-        while(currentNode.next != null) {
-            currentNode = currentNode.next;
+    public LinkedList(Node first) {
+        origin = first;
+    }
+
+
+    public void addItem(Item data) {
+        if (origin == null) {
+            origin = new Node<Item>(data);
+        } else {
+            Node<Item> temp = origin;
+            while (temp.next != null) {
+                temp = temp.next;
+            }
+            temp.next = new Node<Item>(data);
         }
-        currentNode.setNext(newNode);
     }
 
-    public int getItemPosition(int item) {
-        Node currentNode = origin;
+    public int getItemPosition(Item data) {
+        if (origin == null) {
+            return -1;
+        }
+        Node<Item> currentNode = origin;
         int counter = 0;
-        while(currentNode.data != item) {
-            if(currentNode.next == null) {
+        while (!(currentNode.data == data)) {
+            if (currentNode.next == null) {
                 return -1;
             }
             currentNode = currentNode.next;
-            counter ++;
+            counter++;
         }
         return counter;
+
+
     }
 
-    public void insert(int item, int place) {
-        Node currentNode = origin;
-        int counter = 0;
-        Node newNode = new Node(item);
+    public void insert(Item data, int place) {
+        Node<Item> currentNode = origin;
+        //if start, then place node immediately at beginning
+        if (place == 0) {
+            origin = new Node<Item>(data);
+            origin.next = currentNode;
+        } else {
+            int counter = 0;
+            while (currentNode != null) {
+                if (counter == place - 1) {
+                    Node<Item> temp = currentNode.next;
+                    temp.next = new Node<Item>(data);
+                    temp.next.next = temp;
 
-        while(counter != place-1) {
-            if(currentNode.next == null) {
-                return;
+                } else {
+                    currentNode = currentNode.next;
+                }
+                counter++;
             }
-            currentNode = currentNode.next;
-            counter ++;
-        }
 
-        Node tempNode = currentNode.next;
-        currentNode.setNext(newNode);
-        newNode.setNext(tempNode);
+        }
 
     }
 
     public void remove(int place) {
-        Node currentNode = origin;
+        Node<Item> currentNode = origin;
         int counter = 0;
-
-        while(counter != place-1) {
-            if(currentNode.next == null) {
+        while (counter != place - 1) {
+            if (currentNode.next == null) {
                 return;
             }
             currentNode = currentNode.next;
-            counter ++;
+            counter++;
         }
-
-        currentNode.setNext(currentNode.next.next);
-
+        currentNode.next = currentNode.next.next;
     }
 
     public void printList() {
-        Node currentNode = origin;
-
-        while(!currentNode.next.equals(null)) {
-            StdOut.println(currentNode.data);
-        }
+       Node<Item> currentNode = origin;
+       while(currentNode.next != null){
+           StdOut.print(currentNode.data + " ");
+           currentNode = currentNode.next;
+       }
+        StdOut.print(currentNode.data + " \n");
 
     }
 
+    //ITERATIVE reverse List extension
+    public void reverseListIter(){
+        Node prevNode = null;
+        Node currentNode = origin;
+        Node nextNode;
+        while(currentNode != null) {
+            nextNode = currentNode.next;
+            currentNode.next = prevNode;
+            prevNode = currentNode;
+            currentNode = nextNode;
+        }
+        origin = prevNode;
+    }
 }
